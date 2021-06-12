@@ -53,7 +53,7 @@
                                     class=" whitespace-nowrap w-full text-[25px] flex justify-between fill-current">
                                     <div
                                         class="group hover:bg-[#EFF3F6] py-[15px] px-[20px] w-[268px] rounded-[10px] cursor-pointer">
-                                            <a href="{{route('evidencija.create')}}" aria-label="Izdate knjige"
+                                        <a href="{{route('evidencija.create')}}" aria-label="Izdate knjige"
                                             class="flex items-center">
                                             <i
                                                 class="text-[#707070] text-[20px] fas fa-file transition duration-300 ease-in group-hover:text-[#576cdf]"></i>
@@ -525,8 +525,7 @@
                         
                                 
                            
-                            @if (strcmp($niz[1],'Izdata') == 0 )
-                            {{-- {{ dump($niz[1])}} --}}
+                            @if (strcmp($niz[1],'Vracena') == 0)
                             
                             <tr class="hover:bg-gray-200 hover:shadow-md border-b-[1px] border-[#e4dfdf]">
                                 <td class="px-4 py-3 whitespace-no-wrap">
@@ -536,7 +535,9 @@
                                     </label>
                                 </td>
                                 <td class="flex flex-row items-center px-4 py-3">
-                                    <img class="object-cover w-8 mr-2 h-11" src="img/tomsojer.jpg" alt="" />
+                                    {{-- <img class="object-cover w-8 mr-2 h-11" src="/images/1623500338.jpg" alt="" /> --}}
+                                    
+                                    <img class="object-cover w-8 mr-2 h-11" src="/img/tomsojer.jpg" alt="" />
                                     <a href="{{route('evidencija.show',$niz[7])}}">
                                         <span class="font-medium text-center">{{$niz[0]}}</span>
                                     </a>

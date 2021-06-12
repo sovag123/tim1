@@ -35,7 +35,7 @@
             </div>
             <!-- Space for content -->
             <div class="scroll height-content section-content">
-                <form method="post" action="{{route('ucenik.store')}}" class="text-gray-700 text-[14px] forma">
+                <form method="post" action="{{route('ucenik.store')}}" enctype="multipart/form-data" class="text-gray-700 text-[14px] forma">
                    @csrf 
                    @method('POST')
                     <div class="flex flex-row ml-[30px]">
@@ -50,14 +50,18 @@
 
                             <div class="mt-[20px]">
                                 <span>Tip korisnika</span>
-                                <select  class="flex w-[90%] mt-2 px-2 py-2 border bg-gray-300 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#576cdf]" name="tip_korisnika">
-                                  <option></option>
-                                  @foreach($tip as $t)
-                                    <option selected=@php if($t->Naziv=='Ucenik') {echo "selected";} @endphp value="{{$t->id}}">
+                                <select class="flex w-[90%] mt-2 px-2 py-2 border bg-gray-300 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#576cdf]"  name="tip_korisnika">
+                                   <option></option>
+                                    @foreach($tip as $t)
+                                    <option value="{{$t->id}}">
                                         {{$t->Naziv}}
                                     </option>
                                     @endforeach
                                 </select>
+                                <div class="fail" id="validateNameBibliotekarEdit">
+                                @error('tip_korisnika')@php echo "Tip korisnika je obavezno polje"; @endphp @enderror
+
+                                </div>
                             </div>
 
                             <div class="mt-[20px]">

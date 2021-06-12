@@ -177,6 +177,7 @@
                         </div>
                     </div>
                     <div class="mt-[40px] mx-[30px]">
+                        @foreach ($listaIzdanja as $listaIzdanje)
                         <div class="flex flex-col max-w-[304px]">
                             <div class="text-gray-500 ">
                                 <p class="inline uppercase">
@@ -207,66 +208,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="mt-[40px] flex flex-col max-w-[304px]">
-                            <div class="text-gray-500 ">
-                                <p class="inline uppercase">
-                                    Izdavanja knjige
-                                </p>
-                                <span>
-                                    - 4 days ago
-                                </span>
-                            </div>
-                            <div>
-                                <p>
-                                    <a href="bibliotekarProfile.php" class="text-[#2196f3] hover:text-blue-600">
-                                        Valentina K.
-                                    </a>
-                                    je izdala knjigu
-                                    <a href="ucenikProfile.php" class="text-[#2196f3] hover:text-blue-600">
-                                        Peru Perovicu
-                                    </a>
-                                    dana
-                                    <span class="font-medium">
-                                        21.02.2021.
-                                    </span>
-                                </p>
-                            </div>
-                            <div>
-                                <a href="izdavanjeDetalji.php" class="text-[#2196f3] hover:text-blue-600">
-                                    pogledaj detaljnije >>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="mt-[40px] flex flex-col max-w-[304px]">
-                            <div class="text-gray-500 ">
-                                <p class="inline uppercase">
-                                    Izdavanja knjige
-                                </p>
-                                <span>
-                                    - 4 days ago
-                                </span>
-                            </div>
-                            <div>
-                                <p>
-                                    <a href="bibliotekarProfile.php" class="text-[#2196f3] hover:text-blue-600">
-                                        Valentina K.
-                                    </a>
-                                    je izdala knjigu
-                                    <a href="ucenikProfile.php" class="text-[#2196f3] hover:text-blue-600">
-                                        Peru Perovicu
-                                    </a>
-                                    dana
-                                    <span class="font-medium">
-                                        21.02.2021.
-                                    </span>
-                                </p>
-                            </div>
-                            <div>
-                                <a href="izdavanjeDetalji.php" class="text-[#2196f3] hover:text-blue-600">
-                                    pogledaj detaljnije >>
-                                </a>
-                            </div>
-                        </div>
+                       @endforeach
                         <div class="mt-[40px]">
                             <a href="dashboardAktivnost.php?knjiga=Tom Sojer" class="text-[#2196f3] hover:text-blue-600">
                                 <i class="fas fa-history"></i> Prikazi sve

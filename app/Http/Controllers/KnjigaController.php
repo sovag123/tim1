@@ -20,6 +20,10 @@ use App\Models\Izdavac;
 use App\Models\Rezervacija;
 use App\Models\Statusknjige;
 use App\Models\Izdavanjestatusknjige;
+use App\Models\Rzrezervacije;
+use Carbon\Carbon;
+use DateTime;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class KnjigaController extends Controller
@@ -143,7 +147,7 @@ class KnjigaController extends Controller
             'Naslov'=>$request->nazivKnjiga,
             'izdavac_id'=>$request->izdavac,
             'pismo_id'=>$request->pismo,
-            'jezik_id'=>$request->izdavac,
+            'jezik_id'=>$request->jezik,
             'format_id'=>$request->format,
             'povez_id'=>$request->povez,
             'BrojStrana'=>$request->brStrana,
@@ -180,7 +184,18 @@ class KnjigaController extends Controller
     public function show(Knjiga $knjiga)
     {  
         $knjiga=Knjiga::with('autors','zanrs','kategorijas')->where('id',$knjiga->id)->first();
-        return view('knjiga.show',compact('knjiga'));
+        $listaIzdanja = Izdavanje::all();
+        $datetime1 = new DateTime(Carbon::now());
+        // $datetime2 = new DateTime($izdavanje->datumizdavanja);
+        // $interval = $datetime1->diff($datetime2);
+        // $days = $interval->format('%a');
+        // $dani;
+        $rezervacije = Rezervacija::paginate(4);
+        $knjige = Knjiga::all();
+        // ddd($rezervacije);
+
+       
+        return view('knjiga.show',['knjiga'=>$knjiga,'listaIzdanja'=>$listaIzdanja,'datetime1'=>$datetime1,'rezervacije'=>$rezervacije]);
     }
    public function spec(Knjiga $knjiga){
         $knjiga=Knjiga::with('autors','zanrs','kategorijas')->where('id',$knjiga->id)->first();
@@ -311,9 +326,11 @@ class KnjigaController extends Controller
          ]);
         $datumVracanja=explode('/',$request->datumVracanja);
          $datumVracanja="$datumVracanja[2]-$datumVracanja[1]-$datumVracanja[0]";
+         $id = Auth::user()->id;
+        //  dd($id);
          $izdavanje=Izdavanje::create([
           'knjiga_id'=>$knjiga->id,
-          'izdaokorisnik_id'=>1,  //$request->izdao  auth()->user()->id
+          'izdaokorisnik_id'=>$id,
           'pozajmiokorisnik_id'=>$request->ucenik,
           'datumizdavanja'=>$request->datumIzdavanja,
           'datumvracanja'=>$datumVracanja
@@ -322,9 +339,18 @@ class KnjigaController extends Controller
          $izdavanje->izdataZa('knjiga_id','pozajmiokorisnik_id');
          $izdavanje->izdaoKnjigu('izdaokorisnik_id','knjiga_id');
          $izdavanje->pozajmioKnjigu('pozajmiokorisnik_id','knjiga_id');*/
-         $id=Statusknjige::where('Naziv','Izdata')->first()->id;
-         $izdavanje->statusknjiges()->attach($id);
-         if($izdavanje){
+        //  $id=Statusknjige::firstWhere('Naziv','Izdata')->id;
+        //  $izdavanje->statusknjiges()->attach($id);
+        
+
+        //  dd($request->datumIzdavanja);
+        $izdavanjeStatusKnjige = new Izdavanjestatusknjige();
+        $izdavanjeStatusKnjige->izdavanje_id = $izdavanje->id;
+        $izdavanjeStatusKnjige->statusknjige_id = Statusknjige::firstWhere('Naziv', 'Izdata')->id;
+        $izdavanjeStatusKnjige->datum = $request->datumIzdavanja;
+        $izdavanjeStatusKnjige->save();
+        
+        if($izdavanje){
             $knjiga1=Knjiga::find($knjiga->id);
              // Kako da ubacimo tri parametra $knjiga1->iznajmili_ucenici()->attach($request->ucenik);
              $knjiga1->IzdatoPrimjeraka=$knjiga1->IzdatoPrimjeraka+1;
@@ -350,9 +376,9 @@ class KnjigaController extends Controller
      ]);
       $rezervacija=Rezervacija::create([
       'knjiga_id'=>$knjiga->id,
-      'rezervisaokorisnik_id'=>1,                  //$request->izdao,
+      'rezervisaokorisnik_id'=>Auth::user()->id,
       'zakorisnik_id'=>$request->ucenik,
-      'razlogzatvaranja_id'=>4,
+      'razlogzatvaranja_id'=>1,
       'datumpodnosenja'=>$request->datumRezervisanja,
       'datumrezervacije'=>$request->datumRezervisanja,
       'datumzatvaranja'=>$request->datumRezervisanja
@@ -437,5 +463,17 @@ class KnjigaController extends Controller
             $knjige=Knjiga::with(['autors','zanrs','kategorijas'])->get();
             return view('knjiga.index',['knjige'=>$knjige,'autori' => $autori, 'autori_filter'=>$autori_arr,'kategorije'=>$kategorije]);
         // return redirect()->route('knjiga.filteri', ['autori' => $autori_arr]);
+    }
+    public function rezervacijePocetna(Request $request){
+        $rez = Rezervacija::find($request->rez);
+        if($request->action == 1){
+            return redirect()->route('knjiga.izdavanje', [$rez->knjiga_id]);
+        }else {
+            $razlogZatvaranje = new Rzrezervacije();
+            $razlogZatvaranje->Naziv = 'Odbijena rezervacija';
+            $razlogZatvaranje->save();
+            $rez->razlogzatvaranja_id = $razlogZatvaranje->id;
+            return redirect('/');
+        }
     }
 }

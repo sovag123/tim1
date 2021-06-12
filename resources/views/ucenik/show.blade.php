@@ -67,7 +67,7 @@
                 <a href="#" class="inline active-book-nav">
                     Osnovni detalji
                 </a>
-                <a href="ucenikIzdate.php" class="inline ml-[70px] hover:text-blue-800">
+                <a href="{{route('ucenik.evidencija')}}" class="inline ml-[70px] hover:text-blue-800">
                     Evidencija iznajmljivanja
                 </a>
             </div>

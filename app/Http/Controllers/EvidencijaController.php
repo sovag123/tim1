@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bibliotekar;
 use App\Models\Izdavanje;
 use App\Models\Izdavanjestatusknjige;
 use App\Models\Knjiga;
@@ -68,8 +69,10 @@ class EvidencijaController extends Controller
             $ucenik_id = $izdavanje->pozajmiokorisnik_id;
             $ucenik = User::find($ucenik_id);
             // dump($imena_knjiga->Naslov,$izdavac->ImePrezime,$ucenik->ImePrezime);
+           
             $status_knjige_id =  Izdavanjestatusknjige::firstWhere('izdavanje_id', $izdavanje->id);
 
+            // dd($status_knjige_id);
             $status_knjige = $status_knjige_id->statusknjige_id;
 
 
@@ -86,6 +89,7 @@ class EvidencijaController extends Controller
         // $nedelje = floor($days/7);
         // $dani = $days%7;
             array_push($niz_proba,$days);
+            array_push($niz_proba, $izdavanje->id);
             array_push($matrica_proba, $niz_proba);
             
             $niz_proba = [];
@@ -107,7 +111,51 @@ class EvidencijaController extends Controller
      */
     public function create()
     {
-        //
+        $izdavanja = Izdavanje::all();
+        $matrica_proba = [];
+        $niz_proba = [];
+        foreach ($izdavanja as $izdavanje){
+
+            $imena_knjiga = $izdavanje->knji();
+// ovaj sto izdaje 
+            $izdavac_id = $izdavanje->izdaokorisnik_id;
+            $izdavac =  User::find($izdavac_id);
+// ucenik koji uzima knjigu 
+            $ucenik_id = $izdavanje->pozajmiokorisnik_id;
+            $ucenik = User::find($ucenik_id);
+            // dump($imena_knjiga->Naslov,$izdavac->ImePrezime,$ucenik->ImePrezime);
+           
+            $status_knjige_id =  Izdavanjestatusknjige::firstWhere('izdavanje_id', $izdavanje->id);
+
+            // dd($status_knjige_id);
+            $status_knjige = $status_knjige_id->statusknjige_id;
+
+
+            $status  = StatusKnjige::find($status_knjige)->Naziv;
+            array_push($niz_proba, $imena_knjiga->Naslov);
+            array_push($niz_proba, $status);
+            array_push($niz_proba, $izdavac->ImePrezime);
+            array_push($niz_proba, $ucenik->ImePrezime);
+            array_push($niz_proba, $izdavanje->datumizdavanja);
+            array_push($niz_proba, $imena_knjiga->Foto);
+            $datetime1 = new DateTime(Carbon::now());
+        $datetime2 = new DateTime($izdavanje->datumizdavanja);
+        $interval = $datetime1->diff($datetime2);
+        $days = $interval->format('%a');
+        // $nedelje = floor($days/7);
+        // $dani = $days%7;
+            array_push($niz_proba,$days);
+            array_push($niz_proba, $izdavanje->id);
+           
+            array_push($matrica_proba, $niz_proba);
+            
+            $niz_proba = [];
+
+            // ddd($nedelje,$dani);
+        }
+        
+        
+        return view('evidencija.vracene', ['matrica_proba'=>$matrica_proba]);
     }
 
     /**
@@ -116,9 +164,53 @@ class EvidencijaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        //
+        $izdavanja = Izdavanje::all();
+        $matrica_proba = [];
+        $niz_proba = [];
+        foreach ($izdavanja as $izdavanje){
+
+            $imena_knjiga = $izdavanje->knji();
+// ovaj sto izdaje 
+            $izdavac_id = $izdavanje->izdaokorisnik_id;
+            $izdavac =  User::find($izdavac_id);
+// ucenik koji uzima knjigu 
+            $ucenik_id = $izdavanje->pozajmiokorisnik_id;
+            $ucenik = User::find($ucenik_id);
+            // dump($imena_knjiga->Naslov,$izdavac->ImePrezime,$ucenik->ImePrezime);
+           
+            $status_knjige_id =  Izdavanjestatusknjige::firstWhere('izdavanje_id', $izdavanje->id);
+
+            // dd($status_knjige_id);
+            $status_knjige = $status_knjige_id->statusknjige_id;
+
+
+            $status  = StatusKnjige::find($status_knjige)->Naziv;
+            array_push($niz_proba, $imena_knjiga->Naslov);
+            array_push($niz_proba, $status);
+            array_push($niz_proba, $izdavac->ImePrezime);
+            array_push($niz_proba, $ucenik->ImePrezime);
+            array_push($niz_proba, $izdavanje->datumizdavanja);
+            array_push($niz_proba, $imena_knjiga->Foto);
+            $datetime1 = new DateTime(Carbon::now());
+        $datetime2 = new DateTime($izdavanje->datumizdavanja);
+        $interval = $datetime1->diff($datetime2);
+        $days = $interval->format('%a');
+        // $nedelje = floor($days/7);
+        // $dani = $days%7;
+            array_push($niz_proba,$days);
+            array_push($niz,$izdavanje->id);
+            array_push($matrica_proba, $niz_proba);
+            
+            
+            $niz_proba = [];
+
+            // ddd($nedelje,$dani);
+        }
+        
+        
+        return view('evidencija.vracene', ['matrica_proba'=>$matrica_proba]);
     }
 
     /**
@@ -128,8 +220,16 @@ class EvidencijaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
+    {   
+        $izdavanje = Izdavanje::find($id);
+        $knjiga =$izdavanje->knji();
+        $datetime1 = new DateTime(Carbon::now());
+        $datetime2 = new DateTime($izdavanje->datumizdavanja);
+        $interval = $datetime1->diff($datetime2);
+        $days = $interval->format('%a');
+        $bibliotekar = $izdavanje->getIzdaoUser();
+        $ucenik = $izdavanje->uzeoUser();
+        return view('evidencija.show',['izdavanje'=>$izdavanje,'knjiga'=>$knjiga,'days'=>$days,'bibliotekar'=>$bibliotekar,'ucenik'=>$ucenik]);
     }
 
     /**
@@ -164,5 +264,8 @@ class EvidencijaController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function vracene(){
+      
     }
 }

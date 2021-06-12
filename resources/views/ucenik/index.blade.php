@@ -68,7 +68,7 @@
                                         <span class="font-medium text-center">{{$ucenik->ImePrezime}}</span>
                                     </a>
                                 </td>
-                                <td class="px-4 py-4 text-sm leading-5 whitespace-no-wrap">{{$ucenik->Email}}</td>
+                                <td class="px-4 py-4 text-sm leading-5 whitespace-no-wrap">{{$ucenik->email}}</td>
                                 <td class="px-4 py-4 text-sm leading-5 whitespace-no-wrap">{{$ucenik->tipkorisnika->Naziv}}</td>
                                 <td class="px-4 py-4 text-sm leading-5 whitespace-no-wrap">Prije 10 sati</td>
                                 <td class="px-4 py-4 text-sm leading-5 text-right whitespace-no-wrap">

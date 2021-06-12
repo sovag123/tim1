@@ -52,9 +52,11 @@ Route::middleware(['auth'])->group(function(){
     //Route za Autor
     Route::resource('autor',AutorController::class);
     // Route za Bibliotekar
-    Route::resource('bibliotekar',BibliotekarController::class);
+    Route::resource('/bibliotekar',BibliotekarController::class);
     // Route za Ucenika
-    Route::resource('ucenik',UcenikController::class);
+    Route::resource('/ucenik',UcenikController::class);
+    Route::get('/evidencija/$ucenik',[UcenikController::class,'evidencija'])->name('ucenik.evidencija');
+    Route::get('/evidencija/$ucenik',[UcenikController::class,'evidencijaRezervisani'])->name('ucenik.evidencijarez');
     
     //Route za knjigu
     Route::get('knjiga0',[KnjigaController::class,'create0']);
@@ -69,6 +71,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('vrati/{knjiga}',[KnjigaController::class,'vrati'])->name('knjiga.vrati');
     Route::get('otpisi/{knjiga}',[KnjigaController::class,'otpisi'])->name('knjiga.otpisi');
     Route::post('filteri/knjige', [KnjigaController::class, 'Filteric'])->name('knjiga.filteri');
+    Route::post('/rezervacija/konfirmacija', [KnjigaController::class, 'rezervacijePocetna'])->name('knjiga.rezervacijePocetna');
     Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
         return (int) $user->id === (int) $id;
     });

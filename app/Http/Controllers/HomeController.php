@@ -36,8 +36,14 @@ class HomeController extends Controller
         // $dani;
         $rezervacije = Rezervacija::paginate(4);
         $knjige = Knjiga::all();
-        // ddd($rezervacije);
-
-        return view('dashboard.index',['listaIzdanja'=>$listaIzdanja,'datetime1'=>$datetime1,'rezervacije'=>$rezervacije]);
+        $brojac = 0;
+        $brojac1 = 0;
+        foreach($knjige as $knjiga){
+            $brojac+=$knjiga->IzdatoPrimjeraka;
+            $brojac1+=$knjiga->RezervisanoPrimjeraka;
+        }
+        // ddd($brojac);
+        
+        return view('dashboard.index',['listaIzdanja'=>$listaIzdanja,'datetime1'=>$datetime1,'rezervacije'=>$rezervacije,'knjige'=>$knjige,'brojac'=>$brojac,'brojac1'=>$brojac1]);
     }
 }

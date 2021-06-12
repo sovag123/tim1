@@ -10,7 +10,7 @@ class User extends Authenticatable
     const UCENIK=2;
     use HasFactory;
     use Notifiable;
-    protected $fillable=['tipkorisnika_id','password','ImePrezime','KorisnickoIme','Email'];
+    // protected $fillable=['tipkorisnika_id','password','ImePrezime','KorisnickoIme','Email'];
     protected $hidden = [
         'password',
         'remember_token',

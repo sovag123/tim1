@@ -141,7 +141,8 @@ class BibliotekarController extends Controller
             }else{
               return redirect()->route('bibliotekar.index')->with('fail','Bibliotekar nije uspjesno azuriran');
             }
-
+        
+         
     }
 
     /**
